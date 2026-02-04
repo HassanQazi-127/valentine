@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Chapter 📖</title>
+    <style>
+        /* --- GLOBAL THEME --- */
+        body {
+            margin: 0; padding: 0; height: 100vh;
+            display: flex; justify-content: center; align-items: center;
+            background: linear-gradient(135deg, #ffdde1 0%, #ee9ca7 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+        }
+
+        /* --- OPENING SCREEN --- */
+        #opening-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #ffdde1; display: flex; flex-direction: column;
+            justify-content: center; align-items: center; z-index: 999;
+            transition: opacity 0.8s ease-out;
+        }
+
+        .gift-emoji { font-size: 6rem; animation: bounce 2s infinite; margin-bottom: 20px; cursor: pointer;}
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+            40% {transform: translateY(-30px);}
+            60% {transform: translateY(-15px);}
+        }
+
+        .signature-input {
+            border: none; border-bottom: 2px solid #d63384; 
+            padding: 10px; outline: none; background: transparent; 
+            font-style: italic; text-align: center; width: 250px;
+            font-size: 1.3rem; color: #7a4658; margin-top: 15px;
+        }
+        .signature-input::placeholder { color: #eeaeca; opacity: 0.7; }
+
+        .unlock-btn {
+            background-color: #d63384; color: white; margin-top: 25px;
+            padding: 12px 35px; border: none; border-radius: 30px;
+            font-size: 1rem; cursor: pointer; transition: 0.3s;
+            box-shadow: 0 4px 15px rgba(214, 51, 132, 0.3);
+        }
+        .unlock-btn:hover { transform: scale(1.05); background-color: #b01c64; }
+
+        /* --- MAIN CONTENT --- */
+        .main-content {
+            display: none; opacity: 0; width: 100%; 
+            justify-content: center; transition: opacity 1s;
+        }
+
+        .container {
+            text-align: center; background: rgba(255, 255, 255, 0.95);
+            padding: 40px; border-radius: 30px; 
+            box-shadow: 0 20px 60px rgba(255, 105, 180, 0.4);
+            max-width: 90%; width: 400px; position: relative; z-index: 10;
+        }
+
+        /* --- QUESTION SECTION --- */
+        #typing-text { color: #d63384; font-size: 1.8rem; min-height: 2.4rem; margin: 15px 0; }
+        p { color: #7a4658; font-size: 1.1rem; margin-bottom: 25px; line-height: 1.5; }
+        .cute-gif { width: 140px; border-radius: 15px; margin-bottom: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+
+        .btn-group { margin-top: 25px; height: 60px; position: relative; }
+        
+        button.action-btn {
+            padding: 12px 30px; font-size: 1.1rem; border: none;
+            border-radius: 50px; cursor: pointer; font-weight: bold; transition: all 0.2s;
+        }
+
+        #yesBtn { background-color: #ff4d6d; color: white; box-shadow: 0 4px 15px rgba(255, 77, 109, 0.4); }
+        #yesBtn:hover { transform: scale(1.1); background-color: #d00000; }
+        #noBtn { background-color: #f0f0f0; color: #555; position: absolute; left: 60%; white-space: nowrap; }
+
+        /* --- BEAUTIFUL FORM STYLING --- */
+        #date-application { 
+            display: none; 
+            text-align: left; 
+            animation: slideUp 0.5s ease-out;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .form-header { text-align: center; margin-bottom: 20px; }
+        .form-header h2 { color: #d63384; margin: 0; font-size: 1.8rem; }
+        .form-header p { font-size: 0.9rem; margin-top: 5px; }
+
+        .form-group { margin-bottom: 24px; }
+        
+        .form-label { 
+            display: block; margin-bottom: 16px; 
+            color: #d63384; font-weight: 700; font-size: 0.9rem; 
+            text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        
+        /* Modern Input Fields */
+        .styled-input { 
+            width: 100%; padding: 12px 15px; 
+            border: 2px solid transparent; 
+            border-radius: 12px; 
+            outline: none; 
+            background: #fff0f3; 
+            color: #555;
+            font-size: 1rem;
+            box-sizing: border-box;
+            transition: 0.3s ease;
+        }
+        
+        .styled-input:focus {
+            background: #fff;
+            border-color: #ff4d6d;
+            box-shadow: 0 0 0 4px rgba(255, 77, 109, 0.1);
+        }
+
+        /* Food Chips (Pill Buttons) */
+        .food-options { display: flex; flex-wrap: wrap; gap: 40px; justify-content: center;}
+        
+        .hidden-checkbox { display: none; }
+        
+        .food-chip { 
+            padding: 10px 16px; 
+            background: #fff; 
+            border: 1px solid #ffccd5; 
+            border-radius: 50px; 
+            cursor: pointer; 
+            font-size: 0.9rem; 
+            color: #7a4658;
+            transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+            user-select: none;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        
+        .hidden-checkbox:checked + .food-chip { 
+            background-color: #ff4d6d; 
+            color: white; 
+            border-color: #ff4d6d; 
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(255, 77, 109, 0.3);
+        }
+
+        #submitBtn { 
+            width: 100%; margin-top: 25px; 
+            background: linear-gradient(45deg, #ff4d6d, #ff8fa3); 
+            color: white; padding: 16px; border-radius: 15px; 
+            font-size: 1.1rem; border: none; cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(255, 77, 109, 0.4);
+            transition: 0.3s;
+        }
+        #submitBtn:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(255, 77, 109, 0.6); }
+
+        /* --- ANIMATIONS --- */
+        .falling-emoji { position: fixed; top: -50px; z-index: 0; animation: fall linear forwards; pointer-events: none; }
+        @keyframes fall { to { transform: translateY(110vh) rotate(360deg); } }
+
+        /* Music Control */
+        .music-control {
+            position: fixed; bottom: 20px; right: 20px; background: white;
+            padding: 12px; border-radius: 50%; box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            cursor: pointer; font-size: 24px; z-index: 200;
+        }
+    </style>
+</head>
+<body>
+
+    <audio id="bgMusic" loop>
+        <source src="/Music.mp3.mp3" type="audio/mpeg">
+    </audio>
+
+    <div id="opening-screen">
+        <div class="gift-emoji" onclick="unlockChapter()">📖</div>
+        <h2 style="color: #d63384; margin-top: 0;">I have a question...</h2>
+        <p style="color: #7a4658; padding: 0 20px; text-align: center;">
+            "In the story of my life, you’re the chapter I’ll never skip." <br><br>
+            <b>Sign here to unlock your gift: ✍️</b>
+        </p>
+        <input type="text" id="signature" class="signature-input" placeholder="Your beautiful name...">
+        <button onclick="unlockChapter()" class="unlock-btn">Unlock Chapter ❤️</button>
+    </div>
+
+    <div id="main-wrapper" class="main-content">
+        <div id="falling-container"></div>
+        <div class="music-control" onclick="toggleMusic()">🎵</div>
+
+        <div class="container">
+            
+            <div id="question-section">
+                <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExM2QyZzZ5aW12OG12anh6bW12anh6bW12anh6bSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/cLS1cfxvGOPVpf9g3y/giphy.gif" class="cute-gif">
+                
+                <h1 id="typing-text"></h1>
+                <p>I promise to buy you food, take nice photos of you, and handle your mood swings! 🥺👉👈</p>
+                
+                <div class="btn-group">
+                    <button id="yesBtn" class="action-btn">Yes! 🥰</button>
+                    <button id="noBtn" class="action-btn">No 😢</button>
+                </div>
+            </div>
+
+            <div id="date-application">
+                <div class="form-header">
+                    <img src="https://media.giphy.com/media/T86i6yDyOYz7J6dPhf/giphy.gif" class="cute-gif" style="width: 100px;">
+                    <h2>Best. Day. Ever. ❤️</h2>
+                    <p>I can't wait to see you!</p>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">When are you free? 📅</label>
+                    <input type="date" id="dateInput" class="styled-input">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label"  style="padding-bottom: 8px;">What are we eating? 😋</label>
+                    <div class="food-options" style="margin-top: 8px;">
+                        <label><input type="checkbox" id="food1" value="Sushi" class="hidden-checkbox"><span class="food-chip">Sushi 🍣</span></label>
+                        <label><input type="checkbox" id="food2" value="Pizza" class="hidden-checkbox"><span class="food-chip">Pizza 🍕</span></label>
+                        <label><input type="checkbox" id="food3" value="Burgers" class="hidden-checkbox"><span class="food-chip">Burgers 🍔</span></label>
+                        <label><input type="checkbox" id="food4" value="Dessert" class="hidden-checkbox"><span class="food-chip">Dessert 🍰</span></label>
+                        <label><input type="checkbox" id="food5" value="Desi" class="hidden-checkbox"><span class="food-chip">Desi Food 🥘</span></label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">The Vibe? ✨</label>
+                    <select id="moodSelect" class="styled-input">
+                        <option value="Chaos & Food">Pure Chaos & Food 🤪</option>
+                        <option value="Fun Adventure">Fun Adventure 🎢</option>
+                        <option value="Cozy Movie Night">Cozy Movie Night 🍿</option>
+                        <option value="Romantic Dinner">Romantic Dinner 🕯️</option>
+                    </select>
+                </div>
+
+                <button id="submitBtn">Send to WhatsApp 💌</button>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // --- 1. UNLOCKING CHAPTER LOGIC ---
+        const signatureInput = document.getElementById('signature');
+        const openingScreen = document.getElementById('opening-screen');
+        const mainWrapper = document.getElementById('main-wrapper');
+        const music = document.getElementById('bgMusic');
+
+        function unlockChapter() {
+            if(signatureInput.value.trim().length < 2) {
+                alert("Please sign your name to unlock the surprise! ❤️");
+                return;
+            }
+            
+            // Fade out opener
+            openingScreen.style.opacity = '0';
+            
+            setTimeout(() => {
+                openingScreen.style.display = 'none';
+                mainWrapper.style.display = 'flex';
+                setTimeout(() => mainWrapper.style.opacity = '1', 50);
+                
+                // Start Effects
+                startTyping();
+                
+                // Try to play music
+                const playPromise = music.play();
+                if (playPromise !== undefined) {
+                    playPromise.catch(error => {
+                        console.log("Music Autoplay Blocked (Common on Mobile). User can use button.", error);
+                    });
+                }
+                
+                setInterval(createFallingHearts, 300);
+            }, 800);
+        }
+
+        // --- 2. TYPEWRITER EFFECT ---
+        const textToType = "Will you be my Valentine? 🌹";
+        const typeWriterElement = document.getElementById('typing-text');
+        let charIndex = 0;
+
+        function startTyping() {
+            if (charIndex < textToType.length) {
+                typeWriterElement.innerHTML += textToType.charAt(charIndex);
+                charIndex++;
+                setTimeout(startTyping, 100); 
+            }
+        }
+
+        // --- 3. GUILT TRIP BUTTON ---
+        const noBtn = document.getElementById('noBtn');
+        const guiltTexts = ["No 😢", "Are you sure?", "Really sure?", "Think about the pizza 🍕", "Don't do this 😭", "I'm gonna cry...", "Heartbroken 💔"];
+        let textIndex = 0;
+
+        function moveButton() {
+            textIndex = (textIndex + 1) % guiltTexts.length;
+            noBtn.innerText = guiltTexts[textIndex];
+            
+            const maxX = window.innerWidth - noBtn.offsetWidth - 20;
+            const maxY = window.innerHeight - noBtn.offsetHeight - 20;
+            
+            noBtn.style.position = 'fixed';
+            noBtn.style.left = Math.max(0, Math.random() * maxX) + 'px';
+            noBtn.style.top = Math.max(0, Math.random() * maxY) + 'px';
+        }
+        noBtn.addEventListener('mouseover', moveButton);
+        noBtn.addEventListener('touchstart', moveButton);
+
+        // --- 4. SHOW FORM & CONFETTI ---
+        document.getElementById('yesBtn').addEventListener('click', () => {
+            document.getElementById('question-section').style.display = 'none';
+            document.getElementById('date-application').style.display = 'block';
+            launchConfetti();
+        });
+
+        // --- 5. FALLING HEARTS ---
+        function createFallingHearts() {
+            const heart = document.createElement('div');
+            heart.innerText = ['❤️', '🌹', '✨', '💖'][Math.floor(Math.random() * 4)];
+            heart.className = 'falling-emoji';
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.animationDuration = Math.random() * 3 + 2 + 's';
+            heart.style.fontSize = Math.random() * 20 + 20 + 'px';
+            document.getElementById('falling-container').appendChild(heart);
+            setTimeout(() => heart.remove(), 5000);
+        }
+
+        // --- 6. WHATSAPP INTEGRATION ---
+        document.getElementById('submitBtn').addEventListener('click', () => {
+            const foods = [];
+            if(document.getElementById('food1').checked) foods.push("Sushi");
+            if(document.getElementById('food2').checked) foods.push("Pizza");
+            if(document.getElementById('food3').checked) foods.push("Burgers");
+            if(document.getElementById('food4').checked) foods.push("Dessert");
+            if(document.getElementById('food5').checked) foods.push("Desi");
+
+            const date = document.getElementById('dateInput').value;
+            const mood = document.getElementById('moodSelect').value;
+            const signedName = signatureInput.value;
+
+            // --- IMPORTANT: CHANGE PHONE NUMBER HERE ---
+            const phoneNumber = "923460791945"; 
+
+            const message = `Hey! I officially accept the invite! 💖\n\n📜 Signed by: ${signedName}\n🍽️ Cravings: ${foods.join(", ")}\n📅 Date: ${date}\n✨ Vibe: ${mood}\n\nSee you then!`;
+            
+            const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+            window.open(url, '_blank');
+        });
+
+        // --- 7. CONFETTI ---
+        function launchConfetti() {
+            for (let i = 0; i < 50; i++) {
+                const confetti = document.createElement('div');
+                confetti.innerText = '🎉';
+                confetti.style.position = 'fixed';
+                confetti.style.left = '50%';
+                confetti.style.top = '50%';
+                confetti.style.zIndex = '9999';
+                document.body.appendChild(confetti);
+                
+                const destX = (Math.random() - 0.5) * window.innerWidth;
+                const destY = (Math.random() - 0.5) * window.innerHeight;
+                
+                confetti.animate([
+                    { transform: `translate(-50%, -50%)` },
+                    { transform: `translate(${destX}px, ${destY}px)`, opacity: 0 }
+                ], { duration: 1500 });
+                
+                setTimeout(() => confetti.remove(), 1500);
+            }
+        }
+        
+        function toggleMusic() {
+            const music = document.getElementById('bgMusic');
+            if (music.paused) music.play();
+            else music.pause();
+        }
+    </script>
+</body>
+</html>
