@@ -249,34 +249,63 @@
         const mainWrapper = document.getElementById('main-wrapper');
         const music = document.getElementById('bgMusic');
 
-        function unlockChapter() {
-            if(signatureInput.value.trim().length < 2) {
-                alert("Please sign your name to unlock the surprise! ❤️");
-                return;
-            }
-            
-            // Fade out opener
-            openingScreen.style.opacity = '0';
-            
-            setTimeout(() => {
-                openingScreen.style.display = 'none';
-                mainWrapper.style.display = 'flex';
-                setTimeout(() => mainWrapper.style.opacity = '1', 50);
-                
-                // Start Effects
-                startTyping();
-                
-                // Try to play music
-                const playPromise = music.play();
-                if (playPromise !== undefined) {
-                    playPromise.catch(error => {
-                        console.log("Music Autoplay Blocked (Common on Mobile). User can use button.", error);
-                    });
+            function unlockChapter() {
+                if(signatureInput.value.trim().length < 2) {
+                    alert("Please sign your name to unlock the surprise! ❤️");
+                    return;
                 }
+            
+                // --- GA Event Tracking ---
+                gtag('event', 'unlock_chapter', {
+                    'event_category': 'Valentine',
+                    'event_label': signatureInput.value || 'Anonymous'
+                });
+            
+                // rest of your existing unlockChapter code...
+                openingScreen.style.opacity = '0';
+                setTimeout(() => {
+                    openingScreen.style.display = 'none';
+                    mainWrapper.style.display = 'flex';
+                    setTimeout(() => mainWrapper.style.opacity = '1', 50);
+                    startTyping();
+                    const playPromise = music.play();
+                    if (playPromise !== undefined) {
+                        playPromise.catch(error => {
+                            console.log("Music Autoplay Blocked", error);
+                        });
+                    }
+                    setInterval(createFallingHearts, 300);
+                }, 800);
+            }
+
+        // function unlockChapter() {
+        //     if(signatureInput.value.trim().length < 2) {
+        //         alert("Please sign your name to unlock the surprise! ❤️");
+        //         return;
+        //     }
+            
+        //     // Fade out opener
+        //     openingScreen.style.opacity = '0';
+            
+        //     setTimeout(() => {
+        //         openingScreen.style.display = 'none';
+        //         mainWrapper.style.display = 'flex';
+        //         setTimeout(() => mainWrapper.style.opacity = '1', 50);
                 
-                setInterval(createFallingHearts, 300);
-            }, 800);
-        }
+        //         // Start Effects
+        //         startTyping();
+                
+        //         // Try to play music
+        //         const playPromise = music.play();
+        //         if (playPromise !== undefined) {
+        //             playPromise.catch(error => {
+        //                 console.log("Music Autoplay Blocked (Common on Mobile). User can use button.", error);
+        //             });
+        //         }
+                
+        //         setInterval(createFallingHearts, 300);
+        //     }, 800);
+        // }
 
         // --- 2. TYPEWRITER EFFECT ---
         const textToType = "Will you be my Valentine? 🌹";
@@ -311,11 +340,23 @@
         noBtn.addEventListener('touchstart', moveButton);
 
         // --- 4. SHOW FORM & CONFETTI ---
-        document.getElementById('yesBtn').addEventListener('click', () => {
-            document.getElementById('question-section').style.display = 'none';
-            document.getElementById('date-application').style.display = 'block';
-            launchConfetti();
-        });
+            document.getElementById('yesBtn').addEventListener('click', () => {
+                gtag('event', 'said_yes', {
+                    'event_category': 'Valentine',
+                    'event_label': signatureInput.value || 'Anonymous'
+                });
+            
+                // existing code to show form
+                document.getElementById('question-section').style.display = 'none';
+                document.getElementById('date-application').style.display = 'block';
+                launchConfetti();
+            });
+
+        // document.getElementById('yesBtn').addEventListener('click', () => {
+        //     document.getElementById('question-section').style.display = 'none';
+        //     document.getElementById('date-application').style.display = 'block';
+        //     launchConfetti();
+        // });
 
         // --- 5. FALLING HEARTS ---
         function createFallingHearts() {
@@ -331,25 +372,49 @@
 
         // --- 6. WHATSAPP INTEGRATION ---
         document.getElementById('submitBtn').addEventListener('click', () => {
+            gtag('event', 'whatsapp_sent', {
+                'event_category': 'Valentine',
+                'event_label': signatureInput.value || 'Anonymous'
+            });
+        
+            // existing WhatsApp code
             const foods = [];
             if(document.getElementById('food1').checked) foods.push("Sushi");
             if(document.getElementById('food2').checked) foods.push("Pizza");
             if(document.getElementById('food3').checked) foods.push("Burgers");
             if(document.getElementById('food4').checked) foods.push("Dessert");
             if(document.getElementById('food5').checked) foods.push("Desi");
-
+        
             const date = document.getElementById('dateInput').value;
             const mood = document.getElementById('moodSelect').value;
             const signedName = signatureInput.value;
-
-            // --- IMPORTANT: CHANGE PHONE NUMBER HERE ---
+        
             const phoneNumber = "923460791945"; 
-
             const message = `Hey! I officially accept the invite! 💖\n\n📜 Signed by: ${signedName}\n🍽️ Cravings: ${foods.join(", ")}\n📅 Date: ${date}\n✨ Vibe: ${mood}\n\nSee you then!`;
-            
             const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
             window.open(url, '_blank');
         });
+
+        // document.getElementById('submitBtn').addEventListener('click', () => {
+        //     const foods = [];
+        //     if(document.getElementById('food1').checked) foods.push("Sushi");
+        //     if(document.getElementById('food2').checked) foods.push("Pizza");
+        //     if(document.getElementById('food3').checked) foods.push("Burgers");
+        //     if(document.getElementById('food4').checked) foods.push("Dessert");
+        //     if(document.getElementById('food5').checked) foods.push("Desi");
+
+        //     const date = document.getElementById('dateInput').value;
+        //     const mood = document.getElementById('moodSelect').value;
+        //     const signedName = signatureInput.value;
+
+        //     // --- IMPORTANT: CHANGE PHONE NUMBER HERE ---
+        //     const phoneNumber = "923460791945"; 
+
+        //     const message = `Hey! I officially accept the invite! 💖\n\n📜 Signed by: ${signedName}\n🍽️ Cravings: ${foods.join(", ")}\n📅 Date: ${date}\n✨ Vibe: ${mood}\n\nSee you then!`;
+            
+        //     const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+        //     window.open(url, '_blank');
+        // });
 
         // --- 7. CONFETTI ---
         function launchConfetti() {
@@ -383,4 +448,5 @@
 </body>
 
 </html>
+
 
