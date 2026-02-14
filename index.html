@@ -3,7 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Google tag (gtag.js) --> <script async src="https://www.googletagmanager.com/gtag/js?id=G-3PDDDSW97J"></script> <script> window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'G-3PDDDSW97J'); </script>
+     <!-- Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-3PDDDSW97J"></script>
+        <script>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-3PDDDSW97J');
+    
+          // --- Live Visitor Logger ---
+          const logVisitor = () => {
+            const nameInput = document.getElementById('signature');
+            const name = nameInput?.value || 'Anonymous';
+            console.log(`👀 Someone just opened the Valentine page! Name: ${name} | Time: ${new Date().toLocaleTimeString()}`);
+    
+            // Optional: fire GA event for Realtime
+            gtag('event', 'page_open', {
+              'event_category': 'Valentine',
+              'event_label': name
+            });
+          }
+    
+          window.addEventListener('load', logVisitor);
+        </script>
+
     <title>Our Chapter 📖</title>
     <style>
         /* --- GLOBAL THEME --- */
@@ -243,6 +266,10 @@
     </div>
 
     <script>
+        // Track signature updates in real-time
+        document.getElementById('signature')?.addEventListener('input', () => {
+            console.log(`✍️ Signature updated: ${document.getElementById('signature').value}`);
+        });
         // --- 1. UNLOCKING CHAPTER LOGIC ---
         const signatureInput = document.getElementById('signature');
         const openingScreen = document.getElementById('opening-screen');
@@ -448,5 +475,6 @@
 </body>
 
 </html>
+
 
 
